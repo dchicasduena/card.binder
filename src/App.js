@@ -11,15 +11,22 @@ const App = () => {
   const searchCards = async () => {
     setLoading(true);
     setError(null);
+
+    // Call the Netlify function with the search term
     const url = `/.netlify/functions/pokemon-api?name=${encodeURIComponent(searchTerm)}`;
 
     try {
       const response = await fetch(url);
       const data = await response.json();
 
-      // Filter out cards that do not have images
-      const cardsWithImages = data.filter((card) => card.image);
-      setCards(cardsWithImages); // Update state with filtered cards
+      // Check for errors in the response
+      if (data.error) {
+        setError(data.error);
+        setCards([]);
+      } else {
+        // Set the state with the fetched cards
+        setCards(data);
+      }
     } catch (error) {
       setError("Failed to load cards.");
       console.error("Error fetching cards:", error);
@@ -53,7 +60,7 @@ const App = () => {
           cards.map((card, index) => (
             <div key={index} className="card">
               <h3>{card.name}</h3>
-              <img src={`${card.image}/high.webp`} alt={card.name} />
+              <img src={card.images.large} alt={card.name} />
             </div>
           ))
         ) : (
