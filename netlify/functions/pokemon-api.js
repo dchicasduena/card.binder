@@ -21,7 +21,7 @@ exports.handler = async (event, context) => {
         statusCode: 200,
         body: JSON.stringify(cardsWithImages),
         headers: {
-          'Access-Control-Allow-Origin': '*', // Enable CORS
+          'Access-Control-Allow-Origin': '*', 
           'Access-Control-Allow-Headers': 'Content-Type, Authorization', // Allow headers
         },
       };
