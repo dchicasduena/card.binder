@@ -1,43 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Web site created using create-react-app"
-    />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TCGdex Card Viewer</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://kit.fontawesome.com/1dcf539929.js" crossorigin="anonymous"></script>
+</head>
+<body>
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-    <title>React App</title>
-  </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
+  <h1>Pokemon TCG Card Binder Viewer</h1>
+  
+  <div class="search-filter">
+    <input type="text" id="searchInput" placeholder="Search cards..." />
+    <button id="filterButton" onclick="searchCards()">
+      <i class="fa-solid fa-search"></i> Search
+    </button>
+  </div>
+  
+  <div class="card-container" id="cardContainer"></div>
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
+  <script>
+    const apiKey = process.env.REACT_APP_POKEMON_TCG_API_KEY;
 
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
-  </body>
+    async function searchCards() {
+      const searchTerm = document.getElementById("searchInput").value || "pikachu";
+      const url = `https://card-binder.netlify.app/.netlify/functions/pokemon-api?name=${encodeURIComponent(searchTerm)}&apiKey=${apiKey}`;
+
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        // Filter and display the cards with images
+        const cardsWithImages = data.filter(card => card.image);
+        let cardHtml = '';
+        cardsWithImages.forEach(card => {
+          const imageUrl = `${card.image}/high.webp`;
+          cardHtml += `<div><h3>${card.name}</h3><img src="${imageUrl}" alt="${card.name}"></div>`;
+        });
+
+        document.getElementById("cardContainer").innerHTML = cardHtml;
+      } catch (error) {
+        console.error("Error fetching cards:", error);
+        document.getElementById("cardContainer").innerHTML = "<p>Failed to load cards.</p>";
+      }
+    }
+
+    searchCards();
+  </script>
+
+</body>
 </html>

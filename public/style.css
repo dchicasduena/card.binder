@@ -1,0 +1,61 @@
+body { 
+    font-family: Arial, sans-serif; 
+    text-align: center; 
+    margin: 20px; 
+  }
+  
+  .search-filter {
+    margin: 20px auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .search-filter input[type="text"] {
+    padding: 8px;
+    width: 200px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .search-filter button {
+    padding: 8px 12px;
+    border: none;
+    background-color: #007BFF;
+    color: white;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .search-filter button:hover {
+    background-color: #00000f;
+  }
+  
+  .card-container { 
+    display: flex; 
+    flex-wrap: wrap; 
+    justify-content: center; 
+    margin-top: 20px; 
+  }
+  
+  .card { 
+    border: 1px solid #ccc; 
+    padding: 10px; 
+    margin: 10px; 
+    width: 200px; 
+    text-align: center; 
+    background: #f9f9f9; 
+    border-radius: 10px; 
+  }
+  
+  img { 
+    width: 100%; 
+    height: auto; 
+    border-radius: 5px; 
+  }
+  
