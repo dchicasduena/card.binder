@@ -1,0 +1,45 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: #f8f9fa;
+  }
+  
+  /* Dark Mode Header */
+  body.dark-mode .header {
+    background-color: #333;
+  }
+  
+  .logo {
+    text-decoration: none;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: black;
+  }
+  
+  body.dark-mode .logo {
+    color: white;
+  }
+  
+  nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+  }
+  
+  nav li {
+    margin-left: 20px;
+  }
+  
+  nav a {
+    color: black;
+    text-decoration: none;
+    font-size: 1rem;
+  }
+  
+  body.dark-mode nav a {
+    color: white;
+  }
+  
