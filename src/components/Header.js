@@ -1,13 +1,15 @@
 import React from "react";
 import { Link } from "react-router-dom"; 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSun, faMoon } from "@fortawesome/free-solid-svg-icons";
+import { faSun, faMoon, faBookOpen  } from "@fortawesome/free-solid-svg-icons"; // Use a valid icon
 import '../styles/Header.css';
 
 const Header = ({ toggleDarkMode, darkMode }) => {
     return (
       <header className="header">
-        <Link to="/" className="logo">Card Binder</Link>
+        <Link to="/" className="logo">
+          <FontAwesomeIcon icon={faBookOpen } /> Card Binder
+        </Link>
         <nav>
           <ul>
             <li><Link to="/about">About</Link></li>
@@ -21,6 +23,6 @@ const Header = ({ toggleDarkMode, darkMode }) => {
         </nav>
       </header>
     );
-  };
+};
 
 export default Header;
