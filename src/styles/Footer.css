@@ -3,9 +3,14 @@
     width: 100%;
     background-color: #f8f9fa;
   }
+
+  .footer {
+    color: #727272;
+  }
   
   body.dark-mode .footer {
-    background-color: #222;
-    color: white;
+    background-color: #333;
+    color: #9C9C9C;
   }
+  
   

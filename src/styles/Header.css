@@ -17,6 +17,10 @@
     font-weight: bold;
     color: black;
   }
+
+  .logo svg {
+    margin-right: 8px;
+  }
   
   body.dark-mode .logo {
     color: white;
@@ -27,10 +31,13 @@
     padding: 0;
     margin: 0;
     display: flex;
+    justify-content: center;
+    align-items: center;
   }
   
   nav li {
-    margin-left: 20px;
+    margin: 0 10px;
+    font-weight: bold;
   }
   
   nav a {
@@ -40,6 +47,17 @@
   }
   
   body.dark-mode nav a {
+    color: white;
+  }
+  
+  .App-header {
+    background-color: #282c34;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
     color: white;
   }
   

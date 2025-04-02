@@ -30,6 +30,10 @@ const Home = () => {
 
   return (
     <div className="main-content">
+      <h1 className="title">Card Binder</h1>
+      <p className="info">Search for Pokémon TCG cards by name.</p>
+
+      {/* Search input and button */}
       <div className="search-filter">
         <input
           type="text"
