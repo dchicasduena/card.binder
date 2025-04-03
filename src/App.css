@@ -245,20 +245,6 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: white;
-  border-radius: 14px;
-  position: relative;
-}
-
-body.dark-mode .binder-slot {
-  width: 100%;
-  height: auto;
-  padding-bottom: 141.5%; 
-  border: 2px dashed gray;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #252525;
   border-radius: 14px;
   position: relative;
 }
