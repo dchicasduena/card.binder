@@ -12,14 +12,11 @@ const Home = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false); 
   const [binderLayout, setBinderLayout] = useState("3x3"); 
 
-  useEffect(() => {
-    searchCards();
-  }, []);
-  
   const searchCards = async () => {
     setLoading(true);
     setError(null);
     const url = `/.netlify/functions/pokemon-api?name=${encodeURIComponent(searchTerm)}`;
+    setCards([]); // Clear previous cards
 
     try {
       const response = await fetch(url);
