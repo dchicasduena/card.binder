@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect  } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronUp, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 
 const Home = () => {
   const [cards, setCards] = useState([]);
@@ -10,6 +12,10 @@ const Home = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false); 
   const [binderLayout, setBinderLayout] = useState("3x3"); 
 
+  useEffect(() => {
+    searchCards();
+  }, []);
+  
   const searchCards = async () => {
     setLoading(true);
     setError(null);
@@ -104,19 +110,35 @@ const Home = () => {
         </button>
       </div>
 
-      {/* View Toggle Buttons */}
+      {/* View Toggle */}
       <div className="view-toggle">
-        <button className="button" onClick={() => setViewMode("binder")}>
+        <span
+          onClick={() => setViewMode("binder")}
+          style={{
+            cursor: "pointer",
+            marginRight: "8px",
+            fontWeight: "bold",
+            color: viewMode === "binder" ? "#E42535" : "",
+            fontSize: "18px",
+          }}
+        >
           Binder View
-        </button>
-        <button className="button" onClick={() => setViewMode("cards")}>
+        </span>
+        <span className="separator">|</span>
+        <span
+          onClick={() => setViewMode("cards")}
+          style={{
+            cursor: "pointer",
+            marginLeft: "8px",
+            fontWeight: "bold",
+            color: viewMode === "cards" ? "#E42535" : "",
+            fontSize: "18px",
+          }}
+        >
           Card View
-        </button>
+        </span>
       </div>
-
-      {loading && <p>Loading...</p>}
-      {error && <p>{error}</p>}
-
+      
       {/* Show Binder View */}
       {viewMode === "binder" && (
         <div
@@ -128,6 +150,7 @@ const Home = () => {
               binderLayout === "3x4" ? "repeat(3, 1fr)" : `repeat(${binderLayout.split("x")[1]}, 1fr)`, 
             gridAutoRows: binderLayout === "2x2" ? "1fr" : "auto", 
             gap: "10px", 
+            justifyContent: binderLayout === "2x2" ? "1fr" : "auto", /* Adjust for 2x2 */
           }}
         >
           {binderCards.map((card, index) => (
@@ -149,6 +172,16 @@ const Home = () => {
       {/* Show Card View */}
       {viewMode === "cards" && (
         <div className="card-container">
+          {loading && (
+            <div className="loading-container">
+              <FontAwesomeIcon icon={faCircleNotch} spin className="loading-spinner" />
+            </div>
+          )}
+          {error && (
+            <div className="loading-container">
+              <p>{error}</p>
+            </div>
+          )}
           {cards.length > 0 &&
             cards.map((card, index) => (
               <div
@@ -184,6 +217,15 @@ const Home = () => {
           </div>
         </div>
       )}
+
+      {/* Back to Top Button */}
+      <button
+        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        className="back-to-top"
+      >
+          <FontAwesomeIcon icon={faChevronUp} />
+      </button>
+
     </div>
   );
 };
