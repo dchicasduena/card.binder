@@ -1,6 +1,6 @@
-import React, { useState, useEffect  } from "react";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronUp, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+import { faChevronUp, faCircleNotch, faCirclePlus, faCircleMinus  } from "@fortawesome/free-solid-svg-icons";
 
 const Home = () => {
   const [cards, setCards] = useState([]);
@@ -21,6 +21,11 @@ const Home = () => {
     try {
       const response = await fetch(url);
       const data = await response.json();
+
+      if (data.noResults) {
+        setError("No cards found.");
+        return;
+      }
 
       const cardsWithImages = data.filter(
         (card) => card.images && card.images.large
@@ -153,11 +158,16 @@ const Home = () => {
           {binderCards.map((card, index) => (
             <div key={index} className={card ? "card" : "binder-slot"}>
               {card ? (
-                <img
-                  src={card.images.large}
-                  alt={card.name}
-                  onClick={() => removeFromBinder(index)}
-                />
+                <div className="card-image-wrapper" onClick={() => removeFromBinder(index)}>
+                  <img
+                    src={card.images.large}
+                    alt={card.name}
+                    onClick={() => removeFromBinder(index)}
+                  />
+                  <div className="card-overlay">
+                    <FontAwesomeIcon icon={faCircleMinus} className="remove-icon" />
+                  </div>
+                </div>
               ) : (
                 <div className="empty-slot">+</div>
               )}
@@ -186,7 +196,12 @@ const Home = () => {
                 className="card"
                 onClick={() => addToBinder(card)}
               >
+                <div className="card-image-wrapper">
                 <img src={card.images.large} alt={card.name} />
+                <div className="card-overlay">
+                  <FontAwesomeIcon icon={faCirclePlus} />
+                </div>
+              </div>
               </div>
             ))}
         </div>
@@ -206,9 +221,6 @@ const Home = () => {
             <div className="popup-buttons">
               <button onClick={togglePopup} className="close-btn">
                 Close
-              </button>
-              <button onClick={togglePopup} className="confirm-btn">
-                Confirm
               </button>
             </div>
           </div>

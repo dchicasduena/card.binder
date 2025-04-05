@@ -41,6 +41,18 @@ exports.handler = async (event, context) => {
       selectedCards = shuffleArray(cardsWithImages).slice(0, 18);
     }
 
+     // If no cards found, return a "no results" response
+     if (selectedCards.length === 0) {
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ noResults: true }),
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        },
+      };
+    }
+
     return {
       statusCode: 200,
       body: JSON.stringify(selectedCards),
