@@ -66,20 +66,23 @@ const Home = () => {
     if (!binderRef.current) return;
   
     const node = binderRef.current;
-    const rect = node.getBoundingClientRect();
+  
+    const originalStyle = node.style.justifyContent;
+  
+    node.style.justifyContent = 'center'; // Temporarily change layout for image capture
+
+    const actualWidth = node.offsetWidth;
+    const actualHeight = node.offsetHeight + 50;
   
     try {
-      const scale = 2;
       const dataUrl = await toPng(node, {
         cacheBust: true,
         useCORS: true,
-        width: rect.width * scale,
-        height: rect.height * scale,
+        width: actualWidth,
+        height: actualHeight,
         style: {
-          transform: `scale(${scale})`,
-          transformOrigin: 'top left',
-          width: `${rect.width}px`,
-          height: `${rect.height}px`,
+          width: `${actualWidth}px`,
+          height: `${actualHeight}px`,
         }
       });
   
@@ -89,6 +92,9 @@ const Home = () => {
       link.click();
     } catch (error) {
       console.error('Could not generate image:', error);
+    } finally {
+      // Restore the original layout after capturing the image
+      node.style.justifyContent = originalStyle;
     }
   };  
 

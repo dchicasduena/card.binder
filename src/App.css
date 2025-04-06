@@ -272,21 +272,18 @@ body {
   font-size: 64px;
 }
 
-.binder-container {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr); 
-  grid-template-rows: repeat(3, 1fr); 
-  gap: 10px;
-  margin: 20px auto;
-  max-width: 650px; 
+.binder-image-container {
+  display: flex;
   justify-content: center;
+  padding: 20px;
+  overflow: visible;
 }
 
-.binder-image-container {
-  margin: 20px auto;
-  max-width: 1300px; 
-  justify-content: center;
+.binder-container {
+  display: grid;
+  gap: 10px;
 }
+
 
 .binder-slot {
   width: 100%;
