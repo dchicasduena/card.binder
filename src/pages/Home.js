@@ -69,8 +69,8 @@ const Home = () => {
   
     const originalStyle = node.style.justifyContent;
   
-    node.style.justifyContent = 'center'; // Temporarily change layout for image capture
-
+    node.style.justifyContent = 'center';
+  
     const actualWidth = node.offsetWidth;
     const actualHeight = node.offsetHeight + 50;
   
@@ -103,6 +103,7 @@ const Home = () => {
   };
 
   const changeLayout = (layout) => {
+    console.log(binderCards);
     let newBinderCards = [];
     switch (layout) {
       case "2x2":
@@ -121,7 +122,7 @@ const Home = () => {
         newBinderCards = Array(9).fill(null); 
     }
     setBinderLayout(layout);
-    setBinderCards(newBinderCards); 
+    setBinderCards(binderCards.slice(0, newBinderCards.length).concat(newBinderCards.slice(binderCards.length))); 
     togglePopup();
   };
 
