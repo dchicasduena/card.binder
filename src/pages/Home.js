@@ -1,24 +1,25 @@
 import React, { useState, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronUp, faCircleNotch, faCirclePlus, faCircleMinus  } from "@fortawesome/free-solid-svg-icons";
-import { toPng } from 'html-to-image';
+import { faChevronUp, faCircleNotch, faCirclePlus, faCircleMinus } from "@fortawesome/free-solid-svg-icons";
+import { toPng } from "html-to-image";
 
-const Home = () => {
+const Home = ({darkMode}) => {
   const [cards, setCards] = useState([]);
   const [binderCards, setBinderCards] = useState(Array(9).fill(null)); // Default 3x3 layout
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [viewMode, setViewMode] = useState("binder");
-  const [isPopupOpen, setIsPopupOpen] = useState(false); 
-  const [binderLayout, setBinderLayout] = useState("3x3"); 
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [binderLayout, setBinderLayout] = useState("3x3");
   const binderRef = useRef(null);
+  
 
   const searchCards = async () => {
     setLoading(true);
     setError(null);
     const url = `/.netlify/functions/pokemon-api?name=${encodeURIComponent(searchTerm)}`;
-    setCards([]); // Clear previous cards
+    setCards([]);
 
     try {
       const response = await fetch(url);
@@ -29,11 +30,8 @@ const Home = () => {
         return;
       }
 
-      const cardsWithImages = data.filter(
-        (card) => card.images && card.images.large
-      );
+      const cardsWithImages = data.filter((card) => card.images && card.images.large);
       setCards(cardsWithImages);
-
       setViewMode("cards");
     } catch (error) {
       setError("Failed to load cards.");
@@ -66,13 +64,30 @@ const Home = () => {
     if (!binderRef.current) return;
   
     const node = binderRef.current;
-  
     const originalStyle = node.style.justifyContent;
-  
-    node.style.justifyContent = 'center';
+    node.style.justifyContent = "center";
   
     const actualWidth = node.offsetWidth;
-    const actualHeight = node.offsetHeight + 50;
+    const actualHeight = node.offsetHeight;
+  
+    // watermark element
+    const watermark = document.createElement("div");
+    watermark.innerHTML = `Made using <strong>Card Binder</strong><br/>card-binder.netlify.app`;
+    watermark.style.position = "absolute";
+    watermark.style.bottom = "10px";
+    watermark.style.right = "10px";
+    watermark.style.fontSize = "28px";
+    watermark.style.fontWeight = "normal"; 
+    watermark.style.color = darkMode ? "#ffffff" : "#000000";
+    watermark.style.backgroundColor = darkMode ? "#252525" : "#ffffff";
+    watermark.style.borderRadius = "10px";
+    watermark.style.padding = "8px 12px";
+    watermark.style.pointerEvents = "none";
+    watermark.style.lineHeight = "1.4";
+    watermark.style.textAlign = "right";
+
+    node.style.position = "relative";
+    node.appendChild(watermark);
   
     try {
       const dataUrl = await toPng(node, {
@@ -83,17 +98,18 @@ const Home = () => {
         style: {
           width: `${actualWidth}px`,
           height: `${actualHeight}px`,
-        }
+          backgroundColor: darkMode ? "#1a1a1a" : "#ffffff",
+        },
       });
   
-      const link = document.createElement('a');
-      link.download = 'binder-layout.png';
+      const link = document.createElement("a");
+      link.download = "binder-layout.png";
       link.href = dataUrl;
       link.click();
     } catch (error) {
-      console.error('Could not generate image:', error);
+      console.error("Could not generate image:", error);
     } finally {
-      // Restore the original layout after capturing the image
+      node.removeChild(watermark);
       node.style.justifyContent = originalStyle;
     }
   };  
@@ -102,28 +118,68 @@ const Home = () => {
     setIsPopupOpen(!isPopupOpen);
   };
 
+  // Updated layout preserves existing cards
   const changeLayout = (layout) => {
-    console.log(binderCards);
     let newBinderCards = [];
     switch (layout) {
       case "2x2":
-        newBinderCards = Array(4).fill(null); 
+        newBinderCards = Array(4).fill(null);
         break;
       case "3x3":
-        newBinderCards = Array(9).fill(null); 
+        newBinderCards = Array(9).fill(null);
         break;
       case "3x4":
-        newBinderCards = Array(12).fill(null); 
+        newBinderCards = Array(12).fill(null);
         break;
       case "4x4":
-        newBinderCards = Array(16).fill(null); 
+        newBinderCards = Array(16).fill(null);
         break;
       default:
-        newBinderCards = Array(9).fill(null); 
+        newBinderCards = Array(9).fill(null);
     }
     setBinderLayout(layout);
-    setBinderCards(binderCards.slice(0, newBinderCards.length).concat(newBinderCards.slice(binderCards.length))); 
+    setBinderCards(binderCards.slice(0, newBinderCards.length).concat(newBinderCards.slice(binderCards.length)));
     togglePopup();
+  };
+
+  const handleDragStart = (e, index) => {
+    e.dataTransfer.setData("text/plain", index);
+  
+    const dragImage = document.createElement("img");
+    dragImage.src = binderCards[index]?.images.large;
+    
+    dragImage.style.borderRadius = "14px";
+    // max size of the image wile dragging
+    dragImage.width = 200; 
+    dragImage.height = 280; 
+  
+    dragImage.style.position = "absolute";
+    dragImage.style.top = "-1000px";
+    document.body.appendChild(dragImage);
+  
+    e.dataTransfer.setDragImage(dragImage, dragImage.width / 2, dragImage.height / 2);
+  
+    setTimeout(() => {
+      document.body.removeChild(dragImage);
+    }, 0);
+  };  
+
+  const handleDrop = (e, targetIndex) => {
+    e.preventDefault();
+    const sourceIndex = e.dataTransfer.getData("text/plain");
+    if (sourceIndex === "") return;
+
+    setBinderCards((prevCards) => {
+      const newCards = [...prevCards];
+      const draggedCard = newCards[sourceIndex];
+      newCards[sourceIndex] = newCards[targetIndex];
+      newCards[targetIndex] = draggedCard;
+      return newCards;
+    });
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
   };
 
   return (
@@ -182,41 +238,47 @@ const Home = () => {
           Card View
         </span>
       </div>
-      
+
       {/* Show Binder View */}
       {viewMode === "binder" && (
         <div ref={binderRef} className="binder-image-container">
-        <div   
-          className="binder-container"
-          style={{
-            gridTemplateColumns:
-              binderLayout === "3x4" ? "repeat(4, 1fr)" : `repeat(${binderLayout.split("x")[0]}, 1fr)`, 
-            gridTemplateRows:
-              binderLayout === "3x4" ? "repeat(3, 1fr)" : `repeat(${binderLayout.split("x")[1]}, 1fr)`, 
-            gridAutoRows: binderLayout === "2x2" ? "1fr" : "auto", 
-            gap: "10px", 
-            justifyContent: binderLayout === "2x2" ? "1fr" : "auto", /* Adjust for 2x2 */
-          }}
-        >
-          {binderCards.map((card, index) => (
-            <div key={index} className={card ? "card" : "binder-slot"}>
-              {card ? (
-                <div className="card-image-wrapper" onClick={() => removeFromBinder(index)}>
-                  <img
-                    src={card.images.large}
-                    alt={card.name}
-                    onClick={() => removeFromBinder(index)}
-                  />
-                  <div className="card-overlay">
-                    <FontAwesomeIcon icon={faCircleMinus} className="remove-icon" />
+          <div
+            className="binder-container"
+            style={{
+              gridTemplateColumns:
+                binderLayout === "3x4" ? "repeat(4, 1fr)" : `repeat(${binderLayout.split("x")[0]}, 1fr)`,
+              gridTemplateRows:
+                binderLayout === "3x4" ? "repeat(3, 1fr)" : `repeat(${binderLayout.split("x")[1]}, 1fr)`,
+              gridAutoRows: binderLayout === "2x2" ? "1fr" : "auto",
+              gap: "10px",
+              justifyContent: binderLayout === "2x2" ? "1fr" : "auto",
+            }}
+          >
+            {binderCards.map((card, index) => (
+              <div
+                key={index}
+                className={card ? "card" : "binder-slot"}
+                draggable={card ? true : false}
+                onDragStart={(e) => card && handleDragStart(e, index)}
+                onDragOver={handleDragOver}
+                onDrop={(e) => handleDrop(e, index)}
+                onClick={() => {
+                  if (card) removeFromBinder(index);
+                }}
+              >
+                {card ? (
+                  <div className="card-image-wrapper">
+                    <img src={card.images.large} alt={card.name} />
+                    <div className="card-overlay">
+                      <FontAwesomeIcon icon={faCircleMinus} className="remove-icon" />
+                    </div>
                   </div>
-                </div>
-              ) : (
-                <div className="empty-slot">+</div>
-              )}
-            </div>
-          ))}
-        </div>
+                ) : (
+                  <div className="empty-slot">+</div>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
@@ -235,17 +297,13 @@ const Home = () => {
           )}
           {cards.length > 0 &&
             cards.map((card, index) => (
-              <div
-                key={index}
-                className="card"
-                onClick={() => addToBinder(card)}
-              >
+              <div key={index} className="card" onClick={() => addToBinder(card)}>
                 <div className="card-image-wrapper">
-                <img src={card.images.large} alt={card.name} />
-                <div className="card-overlay">
-                  <FontAwesomeIcon icon={faCirclePlus} />
+                  <img src={card.images.large} alt={card.name} />
+                  <div className="card-overlay">
+                    <FontAwesomeIcon icon={faCirclePlus} />
+                  </div>
                 </div>
-              </div>
               </div>
             ))}
         </div>
@@ -272,13 +330,9 @@ const Home = () => {
       )}
 
       {/* Back to Top Button */}
-      <button
-        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-        className="back-to-top"
-      >
-          <FontAwesomeIcon icon={faChevronUp} />
+      <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="back-to-top">
+        <FontAwesomeIcon icon={faChevronUp} />
       </button>
-
     </div>
   );
 };

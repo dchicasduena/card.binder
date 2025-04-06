@@ -26,8 +26,8 @@ const App = () => {
       <div className={`App ${darkMode ? "dark-mode" : ""}`}>
         <Header toggleDarkMode={toggleDarkMode} darkMode={darkMode} />
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
+        <Route path="/" element={<Home darkMode={darkMode} />} />
+        <Route path="/about" element={<About />} />
         </Routes>
         <Footer />
       </div>
