@@ -282,6 +282,12 @@ body {
   justify-content: center;
 }
 
+.binder-image-container {
+  margin: 20px auto;
+  max-width: 1300px; 
+  justify-content: center;
+}
+
 .binder-slot {
   width: 100%;
   width: 316px;

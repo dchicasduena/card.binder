@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronUp, faCircleNotch, faCirclePlus, faCircleMinus  } from "@fortawesome/free-solid-svg-icons";
+import { toPng } from 'html-to-image';
 
 const Home = () => {
   const [cards, setCards] = useState([]);
@@ -11,6 +12,7 @@ const Home = () => {
   const [viewMode, setViewMode] = useState("binder");
   const [isPopupOpen, setIsPopupOpen] = useState(false); 
   const [binderLayout, setBinderLayout] = useState("3x3"); 
+  const binderRef = useRef(null);
 
   const searchCards = async () => {
     setLoading(true);
@@ -59,6 +61,36 @@ const Home = () => {
       return newBinder;
     });
   };
+
+  const downloadImage = async () => {
+    if (!binderRef.current) return;
+  
+    const node = binderRef.current;
+    const rect = node.getBoundingClientRect();
+  
+    try {
+      const scale = 2;
+      const dataUrl = await toPng(node, {
+        cacheBust: true,
+        useCORS: true,
+        width: rect.width * scale,
+        height: rect.height * scale,
+        style: {
+          transform: `scale(${scale})`,
+          transformOrigin: 'top left',
+          width: `${rect.width}px`,
+          height: `${rect.height}px`,
+        }
+      });
+  
+      const link = document.createElement('a');
+      link.download = 'binder-layout.png';
+      link.href = dataUrl;
+      link.click();
+    } catch (error) {
+      console.error('Could not generate image:', error);
+    }
+  };  
 
   const togglePopup = () => {
     setIsPopupOpen(!isPopupOpen);
@@ -110,6 +142,9 @@ const Home = () => {
         <button className="button" onClick={togglePopup}>
           <i className="fa-solid fa-cog"></i>
         </button>
+        <button className="button" onClick={downloadImage}>
+          <i className="fa-solid fa-download"></i>
+        </button>
       </div>
 
       {/* View Toggle */}
@@ -143,7 +178,8 @@ const Home = () => {
       
       {/* Show Binder View */}
       {viewMode === "binder" && (
-        <div
+        <div ref={binderRef} className="binder-image-container">
+        <div   
           className="binder-container"
           style={{
             gridTemplateColumns:
@@ -173,6 +209,7 @@ const Home = () => {
               )}
             </div>
           ))}
+        </div>
         </div>
       )}
 
