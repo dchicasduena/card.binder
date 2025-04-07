@@ -82,6 +82,36 @@ exports.handler = async (event, context) => {
           }
         }
 
+         // Special case for "Detective Pikachu"
+        if (search === 'pikachu') {
+          const [setResults, pokemonResults] = await Promise.all([
+            fetchCards(`https://api.pokemontcg.io/v2/sets?q=name:"pikachu"`),
+            fetchCards(`https://api.pokemontcg.io/v2/cards?q=name:"pikachu"`)
+          ]);
+
+          const setId = setResults.length > 0 ? setResults[0].id : null;
+          const setCards = setId
+            ? await fetchCards(`https://api.pokemontcg.io/v2/cards?q=set.id:"${setId}"`)
+            : [];
+
+          // Merge and dedupe
+          const combined = [...setCards, ...pokemonResults];
+          const unique = Array.from(
+            new Map(combined.map(card => [card.id, card])).values()
+          );
+
+          const withImages = unique.filter(card => card.images?.large);
+
+          return {
+            statusCode: 200,
+            body: JSON.stringify(withImages),
+            headers: {
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+            },
+          };
+        }
+
         if (queryParts.length === 0) {
           const setQuery = `https://api.pokemontcg.io/v2/sets?q=name:"${search}"`;
           const setResponse = await fetch(setQuery, {
