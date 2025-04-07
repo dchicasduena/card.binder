@@ -1,6 +1,18 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Card Binder",
+  "name": "Card Binder - Pokémon TCG Binder Visualizer",
+  "version": "1.0.0",
+  "author": "David Chicas",
+  "homepage": "https://card-binder.netlify.app/",
+  "keywords": [
+    "Pokémon TCG",
+    "Pokémon card organizer",
+    "Visualize Pokémon card collection",
+    "Organize Pokémon card collection",
+    "Pokémon Trading Card Game"
+  ],
+  "description": "Visualize and arrange your Pokémon TCG cards and binder layout with this tool.",
+  "lang": "en-US",
   "icons": [
     {
       "src": "favicon.ico",

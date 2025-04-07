@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
+import { Helmet } from 'react-helmet';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronUp, faCircleNotch, faCirclePlus, faCircleMinus } from "@fortawesome/free-solid-svg-icons";
+import { faChevronUp, faCircleNotch, faCirclePlus, faCircleMinus, faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 import { toPng } from "html-to-image";
 
 const Home = ({darkMode}) => {
@@ -184,13 +185,30 @@ const Home = ({darkMode}) => {
 
   return (
     <div className="main-content">
+      <Helmet>
+        <title>Card Binder - Pokémon TCG Binder Visualizer</title>
+        <meta name="description" content="Visualize and arrange your Pokémon TCG cards and binder layout with this tool." />
+        <meta name="keywords" content="Pokémon TCG, binder tool, collection organizer, about Pokémon TCG tool" />
+      </Helmet>
       <h1 className="title">Visualize your PTCG Binder</h1>
       <p className="info">
         Plan your Pokémon TCG binder layout. <br />
         Drag and arrange them here before placing your cards in your binder.
       </p>
 
-      {/* Search Bar */}
+      <div className="mobile-warning">
+        <br />
+        <FontAwesomeIcon icon={faTriangleExclamation} className="warning-icon" />
+        <h2 className="title">Mobile Warning!</h2>
+        <p className="info">
+          This site is not optimized for mobile devices. <br />
+          For the best experience, please use a desktop browser or a device with a larger screen. <br />
+          You can try rotating your device to check if it works
+        </p>
+      </div>
+
+      <div className="main-container">
+        {/* Search Bar */}
       <div className="search-filter">
         <input
           type="text"
@@ -333,6 +351,8 @@ const Home = ({darkMode}) => {
       <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="back-to-top">
         <FontAwesomeIcon icon={faChevronUp} />
       </button>
+      </div>
+    
     </div>
   );
 };

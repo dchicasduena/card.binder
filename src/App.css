@@ -198,18 +198,6 @@ body {
   font-weight: bold;
 }
 
-@media (max-width: 768px) {
-  .card-container {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 480px) {
-  .card-container {
-    grid-template-columns: 1fr; 
-  }
-}
-
 /* Card Styling */
 .card {
   background-color: rgba(0, 0, 0, 1);
@@ -252,7 +240,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(128, 128, 128, 0.5); /* semi-transparent grey */
+  background-color: rgba(128, 128, 128, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -318,45 +306,6 @@ body {
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 1;
-}
-
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .card-container {
-    grid-template-columns: 1fr; 
-    gap: 15px; 
-    padding: 10px;
-    margin-top: 20px; 
-  }
-
-  .binder-container {
-    grid-template-columns: repeat(3, 1fr); 
-    gap: 10px; 
-    padding: 10px;
-  }
-
-  .binder-slot {
-    padding-bottom: 141.5%;
-    height: auto;
-  }
-}
-
-@media (max-width: 480px) {
-  .card-container {
-    grid-template-columns: 1fr; 
-    gap: 20px;
-    padding: 5px 5px 30px;
-    margin-top: 20px; 
-  }
-
-  .binder-container {
-    grid-template-columns: repeat(3, 1fr); 
-  }
-
-  .binder-slot img {
-    object-fit: contain;
-  }
 }
 
 /* Popup styling */
@@ -465,3 +414,23 @@ body {
   opacity: 1;
 }
 
+.mobile-warning {
+  display: none;
+}
+
+/* Hide the content for mobile screens */
+@media (max-width: 1000px) {
+  .main-container {
+    display: none;
+  }
+
+  .mobile-warning {
+    display: block;
+    justify-content: center
+  }
+
+  .warning-icon {
+    font-size: 50px;
+    opacity: 0.5;
+  }
+}
